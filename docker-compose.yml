@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    command: dockerize -wait tcp://db:5432 -timeout 3m bash -c "python3 manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/app
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+
+  db:
+    build: ./db
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: drf
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ""
